@@ -351,6 +351,10 @@ For more information, see [Download and Initialize the CTL Tool](#download-and-i
                 `--environment` or `-e` : Environment to be searched  
             -   Optional :  
                 `--query` or `-q` : Search query pattern 
+            -   Optional :  
+                `--limit` or `-l` : Limit the maximum number of apis to return
+            -    Optional :  
+                `--format` : pretty-print environments using templates
 
         !!! example
             ```bash
@@ -360,7 +364,7 @@ For more information, see [Download and Initialize the CTL Tool](#download-and-i
             apictl list apis --environment production --insecure
             ```    
             ```go
-            apictl list apis --environment production --query "provider:Alice name:PizzaShackAPI" --insecure
+            apictl list apis --environment production --query provider:Alice name:PizzaShackAPI --limit 15 --insecure
             ```  
 
     -   **Response**
@@ -370,6 +374,24 @@ For more information, see [Download and Initialize the CTL Tool](#download-and-i
         12d6e73c-778d-45ac-b57d-117c6c5092a4   PhoneVerification   1.0                 /phoneverify        PUBLISHED           admin
         91fe87c3-f0d7-4c35-81f5-0e0e42d8e19f   PizzaShackAPI       2.0.0               /pizzashack         CREATED             Alice
         ```
+        
+    !!! tip 
+        When using the `apictl list apis -e dev` command, `-q` or `--query` optional flag can be used to search for
+         APIs. 
+        You can search in attributes by using a `:` modifier. Supported attribute modifiers are **name**, **version**, 
+        **provider**, **context**, **status**, **description**, **subcontext**, **doc** and **label**.  Also you can use
+        combined modifiers.
+        
+        **Example:**
+        
+        -  `provider:wso2` will match an API if the provider of the API contains `wso2`.
+        -  `'provider:"wso2"'` will match an API if the provider of the API is exactly `wso2`.
+        -  `status:PUBLISHED` will match an API if the API is in PUBLISHED state.
+        -  `label:external` will match an API if it contains a Microgateway label called "external".
+        -  `name:pizzashack version:v1` will match an API if the name of the API is pizzashack and version is v1.
+        
+        If no advanced attribute modifier has been specified, the API names containing
+        the search term will be returned as a result.
 
 ## List applications of an environment
 Follow the instructions below to display a list of applications in an environment using CTL:
@@ -396,7 +418,11 @@ For more information, see [Download and Initialize the CTL Tool](#download-and-i
             -   Required :  
                 `--environment` or `-e` : Environment to be searched  
             -   Optional :  
-                `--owner` or `-o` : Owner of the Application 
+                `--owner` or `-o` : Owner of the Application  
+            -   Optional :  
+                `--limit` or `-l` : Limit the maximum number of apps to return
+            -    Optional :  
+                `--format` : pretty-print environments using templates
 
         !!! example
             ```bash
@@ -406,7 +432,7 @@ For more information, see [Download and Initialize the CTL Tool](#download-and-i
             apictl list apps --environment production --insecure
             ```    
             ```go
-            apictl list apps --environment production --owner sampleUser --insecure
+            apictl list apps --environment production --owner sampleUser --limit 15 --insecure
             ```  
 
     -   **Response**
@@ -417,6 +443,90 @@ For more information, see [Download and Initialize the CTL Tool](#download-and-i
 
         36d51e55-3f1e-4f85-86ee-8fe73b0c8adff  SampleApplication   sampleUser  APPROVED   orgA
         ```  
+
+## Formatting the outputs of list
+
+Output of ```list envs```, ```list apis``` and ```list apps``` can be formatted with Go Templates. 
+
+#### Available formatting options
+
+<table>
+    <thead>
+        <tr class="header">
+            <th>Name</th>
+            <th>Usage</th>
+            <th>Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="odd">
+            <td>table</td>
+            <td>This is the default format and the output is displayed as a table</td>
+            <td>
+                <div style="width: 100%; display: block; overflow: auto;">
+                    ``` 
+                    --format "table {% raw %}{{.Name}}\t{{.Id}}{% endraw %}" 
+                    ```
+                </div>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td>json</td>
+            <td>Output is formatted as JSON</td>
+            <td>
+                <div style="width: 100%; display: block; overflow: auto;">
+                    ```
+                    --format "{% raw %}{{ json . }}{% endraw %}" 
+                    ```
+                </div>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td>jsonPretty</td>
+            <td>Outputs a human-readable JSON with indented by 2 spaces</td>
+            <td>
+                <div style="width: 100%; display: block; overflow: auto;">
+                    ``` 
+                    --format "table {% raw %}{{ jsonPretty . }}{% endraw %}" 
+                    ```
+                </div>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td>upper</td>
+            <td>Convert string to uppercase</td>
+            <td>
+                <div style="width: 100%; display: block; overflow: auto;">
+                    ``` 
+                    --format "{% raw %}{{upper .Name}}\t{{upper .Context}}{% endraw %}" 
+                    ```
+                </div>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td>lower</td>
+            <td>Convert string to lowercase</td>
+            <td>
+                <div style="width: 100%; display: block; overflow: auto;">
+                    ``` 
+                    --format "{% raw %}{{lower .Name}}\t{{lower .Context}}{% endraw %}"
+                    ```
+                </div>
+            </td>
+        </tr>
+        <tr class="odd">
+            <td>title</td>
+            <td>Convert the first letter to uppercase of a string</td>
+            <td>
+                <div style="width: 100%; display: block; overflow: auto;">
+                    ``` 
+                    --format "{% raw %}{{title .Name}}\t{{title .Context}}{% endraw %}" 
+                    ```
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
         
 ## Set token type
 
