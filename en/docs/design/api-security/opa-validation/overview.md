@@ -3,10 +3,10 @@
 The [Open Policy Agent (OPA)](https://openpolicyagent.org/) is an open source, general-purpose policy engine that unifies policy enforcement. 
 With the ability to define complex policies as a code, OPA provides the much needed flexibility over standard static access control mechanisms such as role based or attribute based access control.
 
-From WSO2 APIM 4.1.0 onwards, you can offload some responsibility of making the decision to authorize or not when a consumer invokes APIs based on policies attached to APIs. Both WSO2 API Manager regular gateway and Choreo Connect supports Open Policy Agent based request validation. Open Policy Agent comprises of a policy engine that allows users (or systems) to query policies for decisions. 
+You can offload some responsibility of making the decision to authorize or not when a consumer invokes APIs based on policies attached to APIs. Both WSO2 API Manager regular Gateway and Choreo Connect supports Open Policy Agent based request validation. Open Policy Agent comprises of a policy engine that allows users (or systems) to query policies for decisions. 
 A policy for Open Policy Agent can be though as a set of rules and policy engine evaluate these rules based on the input it receives.
 
-WSO2 API Manager uses this unique policy engine to evaluate the requests that gateway receives and decide the fate of the request.
+WSO2 API Manager uses this unique policy engine to evaluate the requests that the Gateway receives and decides the fate of the request.
 
 <a href="{{base_path}}/assets/img/design/security/opa/opa-policy-architecture.png">
     <img src="{{base_path}}/assets/img/design/security/opa/opa-policy-architecture.png" alt="OPA Architecture"/>
@@ -14,24 +14,23 @@ WSO2 API Manager uses this unique policy engine to evaluate the requests that ga
 
 ## How to use OPA for request validation?
 
-In oder to evaluate requests with OPA, first you need to deploy OPA as a host-level daemon or a sidecar container. Once a gateway receives a request,
-gateway will extract a predefined set of meta-data from the request and query OPA via HTTP/HTTPS. OPA Policy engine will evaluate the request meta-data against the configured policy and return it's validation response.
-Based on the response, gateway will allow or block the request.
+In oder to evaluate requests with OPA, first you need to deploy OPA as a host-level daemon or a sidecar container. Once a Gateway receives a request,
+it extracts a predefined set of meta-data from the request and query OPA via HTTP/HTTPS. The OPA Policy engine evaluates the request meta-data against the configured policy and returns its validation response.
+The Gateway allows or blocks the request based on the response.
 
 !!! note
-    Gateway node should be able to communicate with this OPA server. It can be either HTTP or HTTPS and if HTTPS is used, make sure that you upload the certificates of the OPA server to the client trust store of the gateway.
+    The Gateway node should be able to communicate with this OPA server. It can be either HTTP or HTTPS, and if HTTPS is used, make sure that you upload the certificates of the OPA server to the client trust store of the Gateway.
     You can add a certificate to trust store via following command.  
-    ``` keytool -importcert -file <opa_endpoint_cert>.cer -keystore <APIM_HOME>/repository/resources/security/client-truststore.jks -alias "OPA server endpoint" ```  
-
+    ``` keytool -importcert -file <opa_endpoint_cert>.cer -keystore <APIM_HOME>/repository/resources/security/client-truststore.jks -alias "OPA server endpoint" ```
 ### Attaching OPA Policy
-Once OPA engine is deployed, you have to attach the policy to the operations that to the operations that you want to enforce OPA validation.
+Once OPA engine is deployed, you have to attach the policy to the operations that you want to enforce OPA validation.
 
-1. In the publisher portal, select the API that you want to configure the OPA policy and navigate to **Develop -> API Configurations -> Policies**.
-2. Select the gateway that the API required to be deployed in the upper right corner of the page.
+1. In the Publisher Portal, select the API that you want to configure the OPA policy and navigate to **Develop -> API Configurations -> Policies**.
+2. Select the Gateway that the API is required to be deployed in the upper right corner of the page.
 3. For this functionality, there is a policy that you can invoke for the request flow named **Validate Request with OPA Policy**. Drag and drop this policy to the request flow of your required operations. 
 4. If you want to apply this to all the operations, select the **Apply to all resources** option from the left bar.
 5. Fill the configurations as per your deployment and save the page.
-6. Create a new revision from these changes and deploy it to the gateway.
+6. Create a new revision from these changes and deploy it to the Gateway.
 
 <a href="{{base_path}}/assets/img/design/security/opa/opa-policy-selection.png">
     <img src="{{base_path}}/assets/img/design/security/opa/opa-policy-selection.png" alt="Select the OPA Policy"/>
@@ -73,10 +72,10 @@ allow {
 
 ### Request Payload to the OPA server
 
-By default, each gateway uses a default Request Generator to generate the request payload to the OPA server. You can configure your policies in OPA server based on the following request format.
+By default, each Gateway uses a default Request Generator to generate the request payload to the OPA server. You can configure your policies in OPA server based on the following request format.
 
 !!! Info
-    You can have your own **Request Generator Implementation**, you can do so by implementing the interface **OPARequestGenerator**. [Custom OPA Policy with Custom Request Generator](#custom-opa-policy-with-custom-request-generator) in this document describes it in more details.
+    You can have your own **Request Generator Implementation** - you can do so by implementing the interface **OPARequestGenerator**. [Custom OPA Policy with Custom Request Generator](#custom-opa-policy-with-custom-request-generator) in this document describes this in more detail.
 
 ```json tab='Format'
 {
@@ -193,7 +192,7 @@ Similar to the request generation, the default request generator class validates
 
 ### Customize the OPA request payload and response validation
 
-If you need to customize the OPA input json or OPA response validation, you can do so by writing your own custom OPA policies with custom Request Generators. Both regular gateway and Choreo Connect supports this extension.
+If you need to customize the OPA input JSON or OPA response validation, you can do so by writing your own custom OPA policies with custom Request Generators. Both regular Gateway and Choreo Connect support this extension.
 
 - [Custom OPA Policy for Regular Gateway](custom-opa-policy-for-regular-gateway.md)
 - [Custom OPA Policy for Choreo Connect](custom-opa-policy-for-choreo-connect.md)
