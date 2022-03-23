@@ -20,7 +20,7 @@ The Gateway allows or blocks the request based on the response.
 
 !!! note
     The Gateway node should be able to communicate with this OPA server. It can be either HTTP or HTTPS, and if HTTPS is used, make sure that you upload the certificates of the OPA server to the client trust store of the Gateway.
-    You can add a certificate to trust store via following command.  
+    You can add a certificate to the trust store via the following command.  
     ``` keytool -importcert -file <opa_endpoint_cert>.cer -keystore <APIM_HOME>/repository/resources/security/client-truststore.jks -alias "OPA server endpoint" ```
 
 
